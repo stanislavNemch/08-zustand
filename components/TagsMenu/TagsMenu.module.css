@@ -1,49 +1,53 @@
 .menuContainer {
-    position: relative;
-    display: inline-block;
+  position: relative;
+  display: inline-block;
 }
 
 .menuButton {
-    background: none;
-    border: none;
-    color: white;
-    cursor: pointer;
-    font-size: 1rem;
-    padding: 0;
+  background-color: #f5f5f5;
+  color: #333;
+  border: 1px solid #ccc;
+  padding: 8px 16px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.2s ease;
+}
+
+.menuButton:hover {
+  background-color: #eaeaea;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .menuList {
-    display: block;
-    position: absolute;
-    top: 100%;
-
-    /* ✨ КЛЮЧЕВОЕ ИЗМЕНЕНИЕ: */
-    right: 0; /* Привязываем к правому краю родителя */
-    left: auto; /* Сбрасываем привязку к левому краю */
-
-    background-color: #333;
-    list-style: none;
-    padding: 0.5rem 0;
-    margin: 0.5rem 0 0;
-    border-radius: 4px;
-    z-index: 10;
-    min-width: 150px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  background-color: #333;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 6px 0;
+  margin: 0;
+  list-style: none;
+  min-width: 180px;
+  z-index: 1000;
 }
 
 .menuItem {
-    padding: 0;
+  margin: 0;
 }
 
 .menuLink {
-    color: white;
-    text-decoration: none;
-    display: block;
-    padding: 0.5rem 1rem;
-    white-space: nowrap; /* Гарантируем, что текст не будет переноситься */
+  display: block;
+  padding: 8px 16px;
+  color: #f0f0f0;
+  text-decoration: none;
+  font-size: 15px;
+  transition: background-color 0.2s ease;
 }
 
 .menuLink:hover {
-    background-color: #555;
-    color: #fff;
+  background-color: #f0f0f0;
+  color: #333;
 }
