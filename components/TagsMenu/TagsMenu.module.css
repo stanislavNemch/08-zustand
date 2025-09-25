@@ -1,0 +1,49 @@
+.menuContainer {
+    position: relative;
+    display: inline-block;
+}
+
+.menuButton {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0;
+}
+
+.menuList {
+    display: block;
+    position: absolute;
+    top: 100%;
+
+    /* ✨ КЛЮЧЕВОЕ ИЗМЕНЕНИЕ: */
+    right: 0; /* Привязываем к правому краю родителя */
+    left: auto; /* Сбрасываем привязку к левому краю */
+
+    background-color: #333;
+    list-style: none;
+    padding: 0.5rem 0;
+    margin: 0.5rem 0 0;
+    border-radius: 4px;
+    z-index: 10;
+    min-width: 150px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.menuItem {
+    padding: 0;
+}
+
+.menuLink {
+    color: white;
+    text-decoration: none;
+    display: block;
+    padding: 0.5rem 1rem;
+    white-space: nowrap; /* Гарантируем, что текст не будет переноситься */
+}
+
+.menuLink:hover {
+    background-color: #555;
+    color: #fff;
+}

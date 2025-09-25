@@ -1,0 +1,41 @@
+.sidebar {
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-right: 1px solid #dee2e6;
+    min-width: 200px;
+}
+
+.title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+.menuList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.menuItem {
+    margin-bottom: 8px;
+}
+
+.menuLink {
+    text-decoration: none;
+    color: #0d6efd;
+    display: block;
+    padding: 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.menuLink:hover {
+    background-color: #e9ecef;
+}
+
+.menuLink.active {
+    background-color: #0d6efd;
+    color: white;
+    font-weight: 600;
+}
