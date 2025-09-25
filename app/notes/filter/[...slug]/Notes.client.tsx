@@ -4,18 +4,16 @@ import { useState, useEffect } from "react";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { useDebounce } from "use-debounce";
 import toast, { Toaster } from "react-hot-toast";
+import Link from "next/link";
 import { fetchNotes } from "@/lib/api";
 import NoteList from "@/components/NoteList/NoteList";
 import SearchBox from "@/components/SearchBox/SearchBox";
 import Pagination from "@/components/Pagination/Pagination";
-import Modal from "@/components/Modal/Modal";
-import NoteForm from "@/components/NoteForm/NoteForm";
 import css from "./NotesPage.module.css";
 
 const NotesClient = ({ tag }: { tag: string }) => {
     const [page, setPage] = useState<number>(1);
     const [searchQuery, setSearchQuery] = useState<string>("");
-    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [debouncedQuery] = useDebounce(searchQuery, 500);
 
     useEffect(() => {
@@ -32,10 +30,6 @@ const NotesClient = ({ tag }: { tag: string }) => {
         setPage(event.selected + 1);
     };
 
-    const openModal = (): void => setIsModalOpen(true);
-    const closeModal = (): void => setIsModalOpen(false);
-
-    const handleCreated = () => toast.success("Note created successfully!");
     const handleDeleted = () => toast.success("Note deleted successfully!");
 
     return (
@@ -50,9 +44,9 @@ const NotesClient = ({ tag }: { tag: string }) => {
                         onPageChange={handlePageClick}
                     />
                 )}
-                <button className={css.button} onClick={openModal}>
+                <Link href="/notes/action/create" className={css.button}>
                     Create note +
-                </button>
+                </Link>
             </header>
             <main>
                 {isLoading && <p>Loading notes...</p>}
@@ -63,9 +57,6 @@ const NotesClient = ({ tag }: { tag: string }) => {
                     />
                 )}
             </main>
-            <Modal isOpen={isModalOpen} onClose={closeModal}>
-                <NoteForm onCancel={closeModal} onCreated={handleCreated} />
-            </Modal>
         </div>
     );
 };
