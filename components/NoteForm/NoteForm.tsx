@@ -1,3 +1,5 @@
+// components/NoteForm/NoteForm.tsx
+
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -14,10 +16,9 @@ interface NoteFormProps {
 
 const TAGS: NoteTag[] = ["Todo", "Work", "Personal", "Meeting", "Shopping"];
 
-// Тип для об'єкта помилок
 type FormErrors = Partial<Record<keyof DraftNote, string>>;
 
-// Функція валідації
+// Оновлена функція валідації
 const validateDraft = (draft: DraftNote): FormErrors => {
     const errors: FormErrors = {};
 
@@ -32,7 +33,10 @@ const validateDraft = (draft: DraftNote): FormErrors => {
     }
 
     // Валідація 'content'
-    if (draft.content.length > 500) {
+    const content = draft.content.trim();
+    if (!content) {
+        errors.content = "Content is required"; // Додаємо перевірку на обов'язковість
+    } else if (draft.content.length > 500) {
         errors.content = "Content must be at most 500 characters";
     }
 
@@ -51,13 +55,10 @@ const NoteForm = ({ onCancel }: NoteFormProps) => {
     const queryClient = useQueryClient();
     const { draft, setDraft, clearDraft } = useNoteStore();
 
-    // Стан для зберігання помилок
     const [errors, setErrors] = useState<FormErrors>({});
 
-    // Перевіряємо валідність при кожній зміні чернетки
     useEffect(() => {
-        const validationErrors = validateDraft(draft);
-        setErrors(validationErrors);
+        setErrors(validateDraft(draft));
     }, [draft]);
 
     const isValid = Object.keys(errors).length === 0;
@@ -73,13 +74,12 @@ const NoteForm = ({ onCancel }: NoteFormProps) => {
 
     const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        // Додаткова перевірка перед відправкою
-        if (!isValid) {
-            return;
-        }
+        if (!isValid) return;
+
         createMutation.mutate({
             ...draft,
             title: draft.title.trim(),
+            content: draft.content.trim(),
         });
     };
 
