@@ -2,10 +2,10 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 import { createNote } from "@/lib/api";
 import type { NoteTag } from "@/types/note";
-import { useNoteStore } from "@/lib/store/noteStore";
-import * as Yup from "yup";
+import { useNoteStore, DraftNote } from "@/lib/store/noteStore";
 import css from "./NoteForm.module.css";
 
 interface NoteFormProps {
@@ -14,71 +14,72 @@ interface NoteFormProps {
 
 const TAGS: NoteTag[] = ["Todo", "Work", "Personal", "Meeting", "Shopping"];
 
-// Схема валидации Yup
-const schema = Yup.object({
-    title: Yup.string()
-        .trim()
-        .min(3, "Title must be at least 3 characters")
-        .max(50, "Title must be at most 50 characters")
-        .required("Title is required"),
-    content: Yup.string().max(500, "Content must be at most 500 characters"),
-    tag: Yup.mixed<NoteTag>()
-        .oneOf(TAGS, "Invalid tag value")
-        .required("Tag is required"),
-});
+// Тип для об'єкта помилок
+type FormErrors = Partial<Record<keyof DraftNote, string>>;
 
-type FormErrors = Partial<Record<"title" | "content" | "tag", string>>;
+// Функція валідації
+const validateDraft = (draft: DraftNote): FormErrors => {
+    const errors: FormErrors = {};
 
-function validateDraft(draft: {
-    title: string;
-    content: string;
-    tag: NoteTag;
-}): FormErrors {
-    try {
-        schema.validateSync(draft, { abortEarly: false });
-        return {};
-    } catch (err) {
-        const errors: FormErrors = {};
-        if (err instanceof Yup.ValidationError) {
-            // Собираем первую ошибку на поле
-            for (const e of err.inner) {
-                const path = e.path as keyof FormErrors | undefined;
-                if (path && !errors[path]) {
-                    errors[path] = e.message;
-                }
-            }
-        }
-        return errors;
+    // Валідація 'title'
+    const title = draft.title.trim();
+    if (!title) {
+        errors.title = "Title is required";
+    } else if (title.length < 3) {
+        errors.title = "Title must be at least 3 characters";
+    } else if (title.length > 50) {
+        errors.title = "Title must be at most 50 characters";
     }
-}
+
+    // Валідація 'content'
+    if (draft.content.length > 500) {
+        errors.content = "Content must be at most 500 characters";
+    }
+
+    // Валідація 'tag'
+    if (!draft.tag) {
+        errors.tag = "Tag is required";
+    } else if (!TAGS.includes(draft.tag)) {
+        errors.tag = "Invalid tag value";
+    }
+
+    return errors;
+};
 
 const NoteForm = ({ onCancel }: NoteFormProps) => {
     const router = useRouter();
     const queryClient = useQueryClient();
-
     const { draft, setDraft, clearDraft } = useNoteStore();
 
-    const errors = validateDraft(draft);
+    // Стан для зберігання помилок
+    const [errors, setErrors] = useState<FormErrors>({});
+
+    // Перевіряємо валідність при кожній зміні чернетки
+    useEffect(() => {
+        const validationErrors = validateDraft(draft);
+        setErrors(validationErrors);
+    }, [draft]);
+
     const isValid = Object.keys(errors).length === 0;
 
     const createMutation = useMutation({
         mutationFn: createNote,
         onSuccess: async () => {
             await queryClient.invalidateQueries({ queryKey: ["notes"] });
-            clearDraft(); // очищаем черновик только при успешном создании
-            router.back(); // возвращаемся на предыдущую страницу
+            clearDraft();
+            router.back();
         },
     });
 
     const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        // Дополнительная защита на случай гонок
-        if (!isValid || createMutation.isPending) return;
-
+        // Додаткова перевірка перед відправкою
+        if (!isValid) {
+            return;
+        }
         createMutation.mutate({
+            ...draft,
             title: draft.title.trim(),
-            content: draft.content,
-            tag: draft.tag,
         });
     };
 

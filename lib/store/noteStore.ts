@@ -26,13 +26,15 @@ export const useNoteStore = create<NoteStore>()(
     persist(
         (set) => ({
             draft: initialDraft,
+            // Оновлюємо чернетку, поєднуючи старий стан з новими даними
             setDraft: (partial) =>
                 set((state) => ({ draft: { ...state.draft, ...partial } })),
+            // Скидаємо чернетку до початкового стану
             clearDraft: () => set({ draft: initialDraft }),
         }),
         {
-            name: "notehub-draft",
-            version: 1,
+            name: "notehub-draft", // Ключ для localStorage
+            version: 1, // Версія для можливих майбутніх міграцій
         }
     )
 );

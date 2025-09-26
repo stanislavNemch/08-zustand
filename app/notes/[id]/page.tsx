@@ -7,7 +7,7 @@ import { fetchNoteById } from "@/lib/api";
 import NoteDetailsClient from "./NoteDetails.client";
 import type { Metadata } from "next";
 
-// Типизируем `params` как Promise
+// Типізуємо `params` як Promise
 interface NoteDetailsPageProps {
     params: Promise<{ id: string }>;
 }
@@ -19,13 +19,13 @@ export async function generateMetadata({
 }: {
     params: Promise<{ id: string }>;
 }): Promise<Metadata> {
-    const { id } = await params;
+    const { id } = await params; // Очікуємо на Promise
 
     try {
         const note = await fetchNoteById(id);
         const snippet =
-            note.content?.length > 140
-                ? `${note.content.slice(0, 140)}…`
+            note.content.length > 150
+                ? `${note.content.slice(0, 150)}…`
                 : note.content || "Note details";
 
         const title = `${note.title} | NoteHub`;
@@ -38,28 +38,14 @@ export async function generateMetadata({
                 title,
                 description: snippet,
                 url,
-                images: [
-                    "https://ac.goit.global/fullstack/react/notehub-og-meta.jpg",
-                ],
+                images: ["/notehub-og-meta.webp"],
                 type: "article",
             },
         };
-    } catch {
-        const title = "Note | NoteHub";
-        const description = "View note details in NoteHub.";
-        const url = `${siteUrl}/notes/${id}`;
+    } catch (error) {
         return {
-            title,
-            description,
-            openGraph: {
-                title,
-                description,
-                url,
-                images: [
-                    "https://ac.goit.global/fullstack/react/notehub-og-meta.jpg",
-                ],
-                type: "article",
-            },
+            title: "Note Not Found | NoteHub",
+            description: "Could not find the requested note.",
         };
     }
 }
@@ -69,8 +55,7 @@ export default async function NoteDetailsPage({
 }: NoteDetailsPageProps) {
     const queryClient = new QueryClient();
 
-    // Явно ожидаем (await) Promise из params
-    const resolvedParams = await params;
+    const resolvedParams = await params; // Очікуємо на Promise
     const { id } = resolvedParams;
 
     await queryClient.prefetchQuery({

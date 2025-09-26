@@ -44,6 +44,7 @@ const NotesClient = ({ tag }: { tag: string }) => {
                         onPageChange={handlePageClick}
                     />
                 )}
+                {/* замість кнопки тепер посилання */}
                 <Link href="/notes/action/create" className={css.button}>
                     Create note +
                 </Link>

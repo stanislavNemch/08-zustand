@@ -14,15 +14,16 @@ const roboto = Roboto({
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
+// Глобальні метадані для всього застосунку
 export const metadata: Metadata = {
     title: "NoteHub",
     description: "Your personal space for notes",
-    metadataBase: new URL(siteUrl),
+    metadataBase: new URL(siteUrl), // Важливо для коректних Open Graph URL
     openGraph: {
         title: "NoteHub",
         description: "Your personal space for notes",
         url: siteUrl,
-        images: ["https://ac.goit.global/fullstack/react/notehub-og-meta.jpg"],
+        images: ["/notehub-og-meta.webp"], // Використовуємо локальне зображення
         siteName: "NoteHub",
         type: "website",
     },
@@ -40,7 +41,8 @@ export default function RootLayout({
             <body className={roboto.variable}>
                 <TanStackProvider>
                     <Header />
-                    <main>{children}</main>
+                    {/* main доданий для кращої семантики */}
+                    <main style={{ flex: 1 }}>{children}</main>
                     {modal}
                     <Footer />
                 </TanStackProvider>

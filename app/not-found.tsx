@@ -9,8 +9,8 @@ export const metadata: Metadata = {
     openGraph: {
         title: "Page not found | NoteHub",
         description: "The page you’re looking for doesn’t exist on NoteHub.",
-        url: `${siteUrl}/not-found`,
-        images: ["https://ac.goit.global/fullstack/react/notehub-og-meta.jpg"],
+        url: `${siteUrl}/404`, // Можна вказати URL, хоча для 404 це не так критично
+        images: ["/notehub-og-meta.webp"],
         type: "website",
     },
 };

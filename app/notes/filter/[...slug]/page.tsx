@@ -7,7 +7,7 @@ import { fetchNotes } from "@/lib/api";
 import NotesClient from "./Notes.client";
 import type { Metadata } from "next";
 
-// Типизируем `params` как Promise
+// Типізуємо `params` як Promise
 interface NotesPageProps {
     params: Promise<{ slug?: string[] }>;
 }
@@ -19,7 +19,7 @@ export async function generateMetadata({
 }: {
     params: Promise<{ slug?: string[] }>;
 }): Promise<Metadata> {
-    const { slug } = await params;
+    const { slug } = await params; // Очікуємо на Promise
     const rawTag = slug?.[0];
     const tag = rawTag && rawTag !== "All" ? rawTag : "All";
 
@@ -38,9 +38,7 @@ export async function generateMetadata({
             title,
             description,
             url,
-            images: [
-                "https://ac.goit.global/fullstack/react/notehub-og-meta.jpg",
-            ],
+            images: ["/notehub-og-meta.webp"],
             type: "website",
         },
     };
@@ -49,8 +47,7 @@ export async function generateMetadata({
 export default async function NotesFilterPage({ params }: NotesPageProps) {
     const queryClient = new QueryClient();
 
-    // Явно ожидаем (await) на Promise
-    const resolvedParams = await params;
+    const resolvedParams = await params; // Очікуємо на Promise
     const tag =
         resolvedParams.slug?.[0] && resolvedParams.slug[0] !== "All"
             ? resolvedParams.slug[0]
