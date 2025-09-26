@@ -1,10 +1,9 @@
-// components/NoteForm/NoteForm.tsx
-
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import toast from "react-hot-toast";
 import { createNote } from "@/lib/api";
 import type { NoteTag } from "@/types/note";
 import { useNoteStore, DraftNote } from "@/lib/store/noteStore";
@@ -66,9 +65,13 @@ const NoteForm = ({ onCancel }: NoteFormProps) => {
     const createMutation = useMutation({
         mutationFn: createNote,
         onSuccess: async () => {
+            toast.success("Note created successfully!");
             await queryClient.invalidateQueries({ queryKey: ["notes"] });
             clearDraft();
             router.back();
+        },
+        onError: () => {
+            toast.error("Failed to create note. Please try again.");
         },
     });
 
